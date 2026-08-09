@@ -1,0 +1,30 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/servicehub_provider
+    username: postgres
+    password: Divya@88
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: provider-service
+              uri: lb://PROVIDER-SERVICE
+              predicates:
+                - Path=/api/providers/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

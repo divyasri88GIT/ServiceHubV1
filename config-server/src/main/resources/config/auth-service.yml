@@ -7,10 +7,18 @@ spring:
     username: postgres
     password: Divya@88
 
-jpa:
-  hibernate:
-    ddl-auto: validate
-  show-sql: false # Production లో logs పెరగకుండా ఉండటానికి false పెట్టడం మంచిది
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-u4hrzsmmp2bxfd6a.us.auth0.com/
+  jpa:
+     hibernate:
+       ddl-auto: validate
+       show-sql: false # Production లో logs పెరగకుండా ఉండటానికి false పెట్టడం మంచిది
+
+  flyway:
+    enabled: true
 
 management:
   endpoints:
@@ -25,3 +33,5 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+  
