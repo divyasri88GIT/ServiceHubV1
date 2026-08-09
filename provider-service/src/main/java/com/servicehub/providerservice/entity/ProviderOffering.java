@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProviderService extends BaseEntity
+public class ProviderOffering extends BaseEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

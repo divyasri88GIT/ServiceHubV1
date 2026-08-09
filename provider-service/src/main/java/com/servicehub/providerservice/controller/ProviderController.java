@@ -1,8 +1,7 @@
 package com.servicehub.providerservice.controller;
 
 
-import com.servicehub.providerservice.dto.ProviderRequest;
-import com.servicehub.providerservice.dto.ProviderResponse;
+import com.servicehub.providerservice.dto.*;
 import com.servicehub.providerservice.service.ProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +33,41 @@ public class ProviderController {
     @PutMapping("/{id}")
     public ProviderResponse updateProvider(@PathVariable Long id, @RequestBody ProviderRequest request) {
         return providerService.updateProvider(id, request);
+    }
+
+    @PostMapping("/{providerId}/services")
+    public ServiceResponse assignService(
+            @PathVariable Long providerId,
+            @RequestBody ServiceRequest request) {
+
+        return providerService.assignService(
+                providerId,
+                request);
+    }
+
+    @GetMapping("/{providerId}/services")
+    public List<ServiceResponse> getServices(
+            @PathVariable Long providerId) {
+
+        return providerService.getServices(
+                providerId);
+    }
+
+    @PostMapping("/{providerId}/availability")
+    public AvailabilityResponse createAvailability(
+            @PathVariable Long providerId,
+            @RequestBody AvailabilityRequest request) {
+
+        return providerService.createAvailability(
+                providerId,
+                request);
+    }
+
+    @GetMapping("/{providerId}/availability")
+    public List<AvailabilityResponse> getAvailability(
+            @PathVariable Long providerId) {
+
+        return providerService.getAvailability(
+                providerId);
     }
 }

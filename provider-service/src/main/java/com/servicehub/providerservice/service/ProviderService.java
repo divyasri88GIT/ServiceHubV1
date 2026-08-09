@@ -1,7 +1,6 @@
 package com.servicehub.providerservice.service;
 
-import com.servicehub.providerservice.dto.ProviderRequest;
-import com.servicehub.providerservice.dto.ProviderResponse;
+import com.servicehub.providerservice.dto.*;
 
 import java.util.List;
 
@@ -14,4 +13,12 @@ public interface ProviderService {
     List<ProviderResponse> getAllProviders();
 
     ProviderResponse updateProvider(Long id, ProviderRequest request);
+
+    ServiceResponse assignService(Long providerId, ServiceRequest request);
+
+    List<ServiceResponse> getServices(Long providerId);
+
+    AvailabilityResponse createAvailability(Long providerId, AvailabilityRequest request);
+
+    List<AvailabilityResponse> getAvailability(Long providerId);
 }
