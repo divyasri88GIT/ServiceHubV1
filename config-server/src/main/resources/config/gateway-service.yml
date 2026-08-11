@@ -19,6 +19,14 @@ spring:
               uri: lb://AUTH-SERVICE  # Eureka లో రిజిస్టర్ అయిన EXACT పేరు
               predicates:
                 - Path=/api/auth/**   # URL Mismatch కాకుండా గేట్‌వే దీనిని సజావుగా ఫార్వర్డ్ చేస్తుంది
+            - id: provider-service
+              uri: lb://PROVIDER-SERVICE
+              predicates:
+                - Path=/api/providers/**
+            - id: booking-service
+              uri: lb://BOOKING-SERVICE
+              predicates:
+                - Path=/api/booking/**
 
 eureka:
   client:

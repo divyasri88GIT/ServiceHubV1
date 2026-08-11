@@ -29,10 +29,7 @@ public class ProviderServiceImpl implements ProviderService {
     private final AvailabilitySlotRepository availabilitySlotRepository;
 
     @Override
-    public ProviderResponse createProvider(
-            String auth0Id,
-            ProviderRequest request
-    ) {
+    public ProviderResponse createProvider(String auth0Id, ProviderRequest request) {
 
         Provider provider = new Provider();
 

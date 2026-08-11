@@ -1,9 +1,9 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/servicehub_provider
+    url: jdbc:postgresql://localhost:5432/servicehub_booking
     username: postgres
     password: Divya@88
 

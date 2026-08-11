@@ -1,0 +1,29 @@
+package com.servicehub.bookingservice.config;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestClient;
+
+@Configuration
+public class RestClientConfig {
+
+//    @Bean
+////    @LoadBalanced
+////    @Qualifier("loadBalancedBuilder")
+//    public RestClient.Builder loadBalancedRestClientBuilder() {
+//        return RestClient.builder();
+//    }
+//
+//    @Bean
+//    @Qualifier("loadBalancedRestClient")
+//    public RestClient restClient(@Qualifier("loadBalancedBuilder") RestClient.Builder builder) {
+//        return builder.build();
+//    }
+
+@Bean
+public RestClient.Builder restClientBuilder() {
+    return RestClient.builder();
+}
+}
