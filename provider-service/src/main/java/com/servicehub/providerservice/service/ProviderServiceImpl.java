@@ -3,19 +3,19 @@ package com.servicehub.providerservice.service;
 import com.servicehub.providerservice.dto.*;
 import com.servicehub.providerservice.entity.Provider;
 import com.servicehub.providerservice.entity.ServiceCategory;
+import com.servicehub.providerservice.entity.SlotAvailability;
 import com.servicehub.providerservice.mapper.ProviderMapper;
 import com.servicehub.providerservice.repository.AvailabilitySlotRepository;
 import com.servicehub.providerservice.repository.ProviderRepository;
 import com.servicehub.providerservice.entity.ProviderOffering;
-import com.servicehub.providerservice.repository.ProviderServiceRepository;
-import com.servicehub.providerservice.repository.ServiceCategoryRepository;
-import com.servicehub.providerservice.entity.AvailabilitySlot;
+import com.servicehub.providerservice.repository.OfferingRepository;
+import com.servicehub.providerservice.repository.CategoryRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -24,8 +24,8 @@ public class ProviderServiceImpl implements ProviderService {
 
     private final ProviderRepository providerRepository;
     private final ProviderMapper providerMapper;
-    private final ProviderServiceRepository providerServiceRepository;
-    private final ServiceCategoryRepository categoryRepository;
+    private final OfferingRepository offeringRepository;
+    private final CategoryRepository categoryRepository;
     private final AvailabilitySlotRepository availabilitySlotRepository;
 
     @Override
@@ -78,81 +78,80 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
-    public ServiceResponse assignService(Long providerId, ServiceRequest request) {
+    public CategoryResponse assignService(Long providerId, CategoryRequest request) {
         Provider provider = providerRepository.findById(providerId)
                 .orElseThrow();
 
-        ServiceCategory category = categoryRepository.findById(request.categoryId()).orElseThrow();
+        ServiceCategory category = categoryRepository.findByName(request.name()).orElseThrow();
 
         ProviderOffering service = new ProviderOffering();
 
         service.setProvider(provider);
         service.setCategory(category);
-        service.setBasePrice(request.basePrice());
         service.setActive(true);
 
-        ProviderOffering saved = providerServiceRepository.save(service);
+        ProviderOffering saved = offeringRepository.save(service);
 
-        return new ServiceResponse(
+        return new CategoryResponse(
                 saved.getId(),
                 category.getName(),
-                saved.getBasePrice()
+                category.getDescription(),
+                category.getActive()
         );
     }
 
     @Override
-    public List<ServiceResponse> getServices(@PathVariable Long providerId) {
+    public List<CategoryResponse> getServices(@PathVariable Long providerId) {
 
-        return providerServiceRepository
+        return offeringRepository
                 .findByProviderId(providerId)
                 .stream()
-                .map(service -> new ServiceResponse(
+                .map(service -> new CategoryResponse(
                         service.getId(),
                         service.getCategory().getName(),
-                        service.getBasePrice()
+                        service.getCategory().getDescription(),
+                        service.getCategory().getActive()
                 ))
                 .toList();
     }
 
-    @Override
-    public AvailabilityResponse createAvailability(Long providerId, AvailabilityRequest request) {
-        Provider provider =
-                providerRepository.findById(providerId)
-                        .orElseThrow();
+    public List<AvailabilityResponse> getSlotsByOffering(Long offeringId) {
+        offeringRepository.findById(offeringId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                "Provider offering not found: " + offeringId));
 
-        AvailabilitySlot slot = new AvailabilitySlot();
-
-        slot.setProvider(provider);
-
-        slot.setDayOfWeek(request.dayOfWeek());
-
-        slot.setStartTime(LocalTime.parse(request.startTime()));
-
-        slot.setEndTime(LocalTime.parse(request.endTime()));
-
-        slot.setAvailable(true);
-
-        AvailabilitySlot saved = availabilitySlotRepository.save(slot);
-
-        return new AvailabilityResponse(
-                saved.getId(),
-                saved.getDayOfWeek(),
-                saved.getStartTime().toString(),
-                saved.getEndTime().toString()
-        );
-    }
-
-    @Override
-    public List<AvailabilityResponse> getAvailability(Long providerId) {
         return availabilitySlotRepository
-                .findByProviderId(providerId)
+                .findByOfferingIdAndAvailableTrue(offeringId)
                 .stream()
                 .map(slot -> new AvailabilityResponse(
                         slot.getId(),
                         slot.getDayOfWeek(),
-                        slot.getStartTime().toString(),
-                        slot.getEndTime().toString()
+                        slot.getStartTime(),
+                        slot.getEndTime(),
+                        slot.getAvailable()
                 ))
                 .toList();
+    }
+
+    @Override
+    public AvailabilityResponse getSlot(Long slotId) {
+
+            return availabilitySlotRepository.findById(slotId)
+                    .map(this::toAvailabilityResponse)
+                    .orElseThrow(() -> new EntityNotFoundException("Slot not Available: " + slotId));
+
+
+    }
+
+    private AvailabilityResponse toAvailabilityResponse(SlotAvailability slotAvailability){
+
+        return new AvailabilityResponse(
+                slotAvailability.getId(),
+                slotAvailability.getDayOfWeek(),
+                slotAvailability.getStartTime(),
+                slotAvailability.getEndTime(),
+                slotAvailability.getAvailable());
+
     }
 }

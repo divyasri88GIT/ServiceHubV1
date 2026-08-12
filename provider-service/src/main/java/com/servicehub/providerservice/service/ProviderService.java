@@ -14,11 +14,12 @@ public interface ProviderService {
 
     ProviderResponse updateProvider(Long id, ProviderRequest request);
 
-    ServiceResponse assignService(Long providerId, ServiceRequest request);
+    CategoryResponse assignService(Long providerId, CategoryRequest request);
 
-    List<ServiceResponse> getServices(Long providerId);
+    List<CategoryResponse> getServices(Long providerId);
 
-    AvailabilityResponse createAvailability(Long providerId, AvailabilityRequest request);
+    List<AvailabilityResponse> getSlotsByOffering(Long offeringId);
 
-    List<AvailabilityResponse> getAvailability(Long providerId);
+    AvailabilityResponse getSlot(Long slotId);
+
 }

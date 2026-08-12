@@ -2,8 +2,6 @@ package com.servicehub.bookingservice.dto;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.util.UUID;
-
 public record BookingRequest(
 
         @NotNull(message = "customer ID is required")

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ProviderServiceRepository extends JpaRepository<ProviderOffering, Long> {
+public interface OfferingRepository extends JpaRepository<ProviderOffering, Long> {
     List<ProviderOffering> findByProviderId(Long providerId);
+    List<ProviderOffering> findByCategoryIdAndActiveTrue(Long categoryId);
 }

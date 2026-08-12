@@ -21,14 +21,14 @@ private final RestClient.Builder restClientBuilder;
 
     public OfferingResponse getOffering(@NotNull(message = "Offering ID is required") Long offeringId) {
         return restClientBuilder.build().get()
-                .uri("http://provider-service/api/provider/{providerId}/services", offeringId)
+                .uri("http://provider-service/api/categories/{offeringId}/offering", offeringId)
                 .retrieve()
                 .body(OfferingResponse.class);
     }
 
     public AvailabilitySlotResponse getSlot(@NotNull(message = "Slot ID is required") Long slotId) {
         return restClientBuilder.build().get()
-                .uri("http://provider-service/api/provider/{providerId}/availability", slotId)
+                .uri("http://provider-service/api/providers/{slotId}/slot", slotId)
                 .retrieve()
                 .body(AvailabilitySlotResponse.class);
     }

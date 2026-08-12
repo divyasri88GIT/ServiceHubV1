@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -43,8 +45,9 @@ public class BookingServiceImpl implements BookingService {
                     throw new SlotAlreadyBookedException();
                 });
 
-        if (!offering.providerId().equals(slot.providerId())) {
-            throw new IllegalArgumentException("Offering and slot belong to different providers");
+        if (!offering.id().equals(slot.offeringId())) {
+            throw new IllegalArgumentException(
+                    "Slot does not belong to selected offering");
         }
 
         Booking booking = Booking.builder()
@@ -53,7 +56,7 @@ public class BookingServiceImpl implements BookingService {
                 .offeringId(request.offeringId())
                 .slotId(request.slotId())
                 .status(BookingStatus.CONFIRMED)
-                .totalPrice(offering.price())
+                .totalPrice(BigDecimal.valueOf(offering.basePrice()))
                 .build();
 
         booking = bookingRepository.save(booking);

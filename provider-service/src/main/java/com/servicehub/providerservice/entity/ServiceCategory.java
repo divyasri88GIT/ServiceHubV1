@@ -9,6 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 public class ServiceCategory extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

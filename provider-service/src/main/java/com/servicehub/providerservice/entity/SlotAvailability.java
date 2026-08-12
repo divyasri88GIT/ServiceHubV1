@@ -12,15 +12,15 @@ import java.time.LocalTime;
 @Setter
 @NoArgsConstructor
 
-public class AvailabilitySlot extends BaseEntity{
+public class SlotAvailability extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "provider_id")
-    private Provider provider;
+    @JoinColumn(name = "offering_id", nullable = false)
+    private ProviderOffering offering;
 
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
