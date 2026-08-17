@@ -6,7 +6,6 @@ The project is being developed incrementally, starting with a complete **V1 end-
 
 ## Architecture
 
-```text
                          ┌──────────────────┐
                          │   API Gateway    │
                          └────────┬─────────┘
@@ -37,7 +36,6 @@ The project is being developed incrementally, starting with a complete **V1 end-
               ┌─────────────────────────────────────────────┐
               │                Config Server                │
               └─────────────────────────────────────────────┘
-```
 
 ## Tech Stack
 
@@ -80,7 +78,7 @@ The project is being developed incrementally, starting with a complete **V1 end-
 | `discovery-service`    | Eureka service discovery                          | ✅      |
 | `auth-service`         | Auth0 integration and user synchronization        | ✅      |
 | `provider-service`     | Providers, categories, offerings and availability | ✅      |
-| `booking-service`      | Booking lifecycle                                 | 🚧     |
+| `booking-service`      | Booking lifecycle                                 | ✅      |
 | `payment-service`      | Payment processing                                | ⏳      |
 | `review-service`       | Customer reviews                                  | ⏳      |
 | `notification-service` | Notifications                                     | ⏳      |
@@ -98,29 +96,73 @@ The project is being developed incrementally, starting with a complete **V1 end-
 
 * Provider CRUD
 * Service categories
-* Provider offerings
-* Availability slots
+* Provider offerings are associated with provider and category
+* Availability slots are associated with provider offerings
 * Day-of-week availability
 * MapStruct mapping
 * Flyway database migrations
 
 ### Booking Service
 
-Currently implementing the first complete booking workflow:
+The first complete V1 booking workflow is now working end-to-end:
 
-```text
-Customer
-   ↓
-Select Provider Offering
-   ↓
-Select Availability Slot
-   ↓
-Create Booking
-   ↓
-Confirm Booking
-```
+    Customer
+       ↓
+    Select Provider Offering
+       ↓
+    Select Availability Slot
+       ↓
+    Create Booking
+       ↓
+    Confirm Booking
+
+The Booking Service communicates with Provider Service using
+a load-balanced `RestClient` and Eureka service discovery.
+
+The current workflow supports:
+
+* Customer creation
+* Provider offering selection
+* Availability slot selection
+* Offering and slot validation
+* Provider/slot relationship validation
+* Booking creation
+* Booking confirmation
+* Total price calculation from the provider offering
+* Persistence of bookings
+
+A successful V1 booking has been tested end-to-end.
 
 For V1 workflow development, demo Auth0 IDs are intentionally used. JWT extraction, authorization and RBAC will be integrated after the complete V1 business workflow is working.
+
+### Current V1 Status
+
+The core Provider → Booking workflow is operational.
+
+Successfully tested:
+
+* Provider registration and discovery through Eureka
+* Centralized configuration through Config Server
+* Provider offerings
+* Availability slots
+* Customer creation
+* Booking Service → Provider Service communication
+* Load-balanced REST communication
+* End-to-end booking creation
+* Booking confirmation
+* Price propagation from offering to booking
+
+Example successful booking:
+
+    {
+      "id": 1,
+      "customerId": 2,
+      "providerId": 1,
+      "offeringId": 3,
+      "slotId": 5,
+      "status": "CONFIRMED",
+      "totalPrice": 500.0
+    }
 
 ## Development Approach
 
@@ -128,7 +170,6 @@ The project is intentionally developed in three stages:
 
 ### Stage 1 — End-to-End V1
 
-```text
 Auth
   ↓
 Provider
@@ -140,7 +181,6 @@ Payment
 Review
   ↓
 Notification
-```
 
 Focus: complete business workflow and service communication.
 
@@ -185,23 +225,19 @@ Focus: complete business workflow and service communication.
 
 ## Example V1 Booking Request
 
-```http
-POST /api/bookings
+http
+POST booking-service/api/booking
 Content-Type: application/json
-```
 
-```json
 {
-  "offeringId": "offering-uuid",
-  "slotId": "slot-uuid"
+  "customerId": 2,
+  "offeringId": 3,
+  "slotId": 5
 }
-```
 
 The current V1 implementation uses:
 
-```text
 auth0|demo-customer
-```
 
 as the customer identity until Auth0 JWT integration is enabled.
 
@@ -229,7 +265,7 @@ This project is also being used to brush up skills...
 
 * [x] Auth Service
 * [x] Provider Service
-* [ ] Booking Service
+* [x] Booking Service
 * [ ] Payment Service
 * [ ] Review Service
 * [ ] Notification Service
