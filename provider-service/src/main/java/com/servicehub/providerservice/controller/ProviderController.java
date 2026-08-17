@@ -5,23 +5,24 @@ import com.servicehub.providerservice.dto.*;
 import com.servicehub.providerservice.service.OfferingService;
 import com.servicehub.providerservice.service.ProviderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/provider-service/api/providers")
+@RequestMapping("/provider-service/api")
 @RequiredArgsConstructor
 public class ProviderController {
 
     private final ProviderService providerService;
 
-    @PostMapping
+    @PostMapping("/provider")
     public ProviderResponse createProvider(@RequestBody ProviderRequest request) {
         return providerService.createProvider("auth0|demo-user", request);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/provider/{id}")
     public ProviderResponse getProvider(@PathVariable Long id) {
         return providerService.getProvider(id);
     }
@@ -31,29 +32,30 @@ public class ProviderController {
         return providerService.getAllProviders();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/provider/{id}")
     public ProviderResponse updateProvider(@PathVariable Long id, @RequestBody ProviderRequest request) {
         return providerService.updateProvider(id, request);
     }
 
-    @PostMapping("/{providerId}/services")
-    public CategoryResponse assignService(
-            @PathVariable Long providerId,
-            @RequestBody CategoryRequest request) {
+    @PostMapping("/{providerId}/service")
+    public OfferingResponse assignService(@PathVariable Long providerId, @RequestBody OfferingRequest request) {
 
-        return providerService.assignService(
-                providerId,
-                request);
+        return providerService.assignService(providerId, request);
     }
 
     @GetMapping("/{providerId}/services")
-    public List<CategoryResponse> getServices(
-            @PathVariable Long providerId) {
+    public List<CategoryResponse> getServices(@PathVariable Long providerId) {
 
         return providerService.getServices(providerId);
     }
 
-    @GetMapping("/{OfferingId}/slots")
+    @PostMapping("/{offeringId}/slot")
+    public AvailabilityResponse createSlot(@PathVariable Long offeringId, @RequestBody AvailabilityRequest request) {
+
+        return providerService.createSlot(offeringId, request);
+    }
+
+    @GetMapping("/{offeringId}/slots")
     public List<AvailabilityResponse> getSlotsByOffering(@PathVariable Long offeringId) {
 
         return providerService.getSlotsByOffering(offeringId);

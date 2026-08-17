@@ -45,7 +45,7 @@ public class BookingServiceImpl implements BookingService {
                     throw new SlotAlreadyBookedException();
                 });
 
-        if (!offering.id().equals(slot.offeringId())) {
+        if (!offering.offeringId().equals(slot.offeringId())) {
             throw new IllegalArgumentException(
                     "Slot does not belong to selected offering");
         }

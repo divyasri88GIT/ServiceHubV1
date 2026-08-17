@@ -9,13 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/bookings")
+@RequestMapping("booking-service/api")
 @RequiredArgsConstructor
 public class BookingController {
 
     private final BookingService bookingService;
 
-    @PostMapping
+    @PostMapping("/booking")
     @ResponseStatus(HttpStatus.CREATED)
     public BookingResponse createBooking(@Valid @RequestBody BookingRequest request)
     {

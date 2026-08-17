@@ -14,9 +14,11 @@ public interface ProviderService {
 
     ProviderResponse updateProvider(Long id, ProviderRequest request);
 
-    CategoryResponse assignService(Long providerId, CategoryRequest request);
+    OfferingResponse assignService(Long providerId, OfferingRequest request);
 
     List<CategoryResponse> getServices(Long providerId);
+
+    AvailabilityResponse createSlot(Long offeringId, AvailabilityRequest request);
 
     List<AvailabilityResponse> getSlotsByOffering(Long offeringId);
 

@@ -1,7 +1,4 @@
 ALTER TABLE availability_slots
-DROP CONSTRAINT fk_availability_provider;
-
-ALTER TABLE availability_slots
 DROP COLUMN provider_id;
 
 ALTER TABLE availability_slots

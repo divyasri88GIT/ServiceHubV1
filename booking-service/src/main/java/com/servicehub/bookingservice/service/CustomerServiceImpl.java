@@ -41,6 +41,9 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public List<CustomerResponse> getAllCustomers() {
-        return List.of();
+        return customerRepository.findAll()
+                .stream()
+                .map(bookingMapper::toCustomerResponse)
+                .toList();
     }
 }

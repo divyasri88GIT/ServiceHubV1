@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/provider-service/api/categories")
+@RequestMapping("/provider-service/api")
 @RequiredArgsConstructor
 public class CategoryController {
 
@@ -21,27 +21,30 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryResponse create(
-         @RequestBody CategoryRequest request) {
+    public CategoryResponse create(@RequestBody CategoryRequest request) {
 
         return service.create(request);
     }
 
-    @GetMapping
+    @GetMapping("/categories")
     public List<CategoryResponse> getAll() {
         return service.getAll();
     }
 
-    @GetMapping("/{id}")
-    public CategoryResponse getById(
-            @PathVariable Long id) {
+    @GetMapping("/category/{id}")
+    public CategoryResponse getById(@PathVariable Long id) {
 
         return service.getById(id);
     }
 
+//    @GetMapping("/offerings")
+//    public List<OfferingResponse> getAllOfferings() {
+//
+//        return offeringService.getAll();
+//    }
+
     @GetMapping("/{categoryId}/offerings")
-    public List<OfferingResponse> getOfferingsByCategory(
-            @PathVariable Long categoryId) {
+    public List<OfferingResponse> getOfferingsByCategory(@PathVariable Long categoryId) {
 
         return offeringService.getOfferingsByCategory(categoryId);
     }

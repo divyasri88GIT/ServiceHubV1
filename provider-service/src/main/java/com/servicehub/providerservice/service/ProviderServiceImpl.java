@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -78,25 +79,28 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
-    public CategoryResponse assignService(Long providerId, CategoryRequest request) {
-        Provider provider = providerRepository.findById(providerId)
-                .orElseThrow();
+    public OfferingResponse assignService(Long providerId, OfferingRequest request) {
+        Provider provider = providerRepository.findById(providerId).orElseThrow();
 
-        ServiceCategory category = categoryRepository.findByName(request.name()).orElseThrow();
+        ServiceCategory category = categoryRepository.findById(request.categoryId()).orElseThrow();
 
         ProviderOffering service = new ProviderOffering();
 
         service.setProvider(provider);
         service.setCategory(category);
+        service.setBasePrice(request.basePrice());
         service.setActive(true);
 
         ProviderOffering saved = offeringRepository.save(service);
 
-        return new CategoryResponse(
+        return new OfferingResponse(
                 saved.getId(),
+                provider.getId(),
+                provider.getBusinessName(),
+                category.getId(),
                 category.getName(),
-                category.getDescription(),
-                category.getActive()
+                saved.getBasePrice(),
+                saved.getActive()
         );
     }
 
@@ -115,6 +119,34 @@ public class ProviderServiceImpl implements ProviderService {
                 .toList();
     }
 
+    @Override
+    public AvailabilityResponse createSlot(Long offeringId, AvailabilityRequest request)
+    {
+        ProviderOffering offering = offeringRepository.findById(offeringId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                "Provider offering not found: " + offeringId));
+
+        SlotAvailability slot = new SlotAvailability();
+
+        slot.setOffering(offering);
+        slot.setDayOfWeek(request.dayOfWeek());
+        slot.setStartTime(LocalTime.parse(request.startTime()));
+        slot.setEndTime(LocalTime.parse(request.endTime()));
+        slot.setAvailable(true);
+
+        SlotAvailability saved = availabilitySlotRepository.save(slot);
+
+        return new AvailabilityResponse(
+                saved.getId(),
+                saved.getOffering().getId(),
+                saved.getDayOfWeek(),
+                saved.getStartTime(),
+                saved.getEndTime(),
+                saved.getAvailable()
+        );
+    }
+
     public List<AvailabilityResponse> getSlotsByOffering(Long offeringId) {
         offeringRepository.findById(offeringId)
                 .orElseThrow(() ->
@@ -126,6 +158,7 @@ public class ProviderServiceImpl implements ProviderService {
                 .stream()
                 .map(slot -> new AvailabilityResponse(
                         slot.getId(),
+                        slot.getOffering().getId(),
                         slot.getDayOfWeek(),
                         slot.getStartTime(),
                         slot.getEndTime(),
@@ -148,6 +181,7 @@ public class ProviderServiceImpl implements ProviderService {
 
         return new AvailabilityResponse(
                 slotAvailability.getId(),
+                slotAvailability.getOffering().getId(),
                 slotAvailability.getDayOfWeek(),
                 slotAvailability.getStartTime(),
                 slotAvailability.getEndTime(),

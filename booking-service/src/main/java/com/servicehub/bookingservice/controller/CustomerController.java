@@ -10,24 +10,26 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/customer")
+@RequestMapping("booking-service/api")
 public class CustomerController {
 
     private final CustomerService customerService;
 
-    @PostMapping
+    @PostMapping("/customer")
     public CustomerResponse createCustomer(@RequestBody CustomerRequest request) {
 
         return customerService.createCustomer("auth0|demo-customer", request);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/customer")
     public CustomerResponse getCustomer(@PathVariable Long id) {
+
         return customerService.getCustomer(id);
     }
 
-    @GetMapping
+    @GetMapping("/customers")
     public List<CustomerResponse> getAllCustomers() {
+
         return customerService.getAllCustomers();
     }
 }

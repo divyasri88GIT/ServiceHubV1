@@ -5,6 +5,7 @@ import java.time.LocalTime;
 
 public record AvailabilityResponse(
         Long id,
+        Long offeringId,
         DayOfWeek dayOfWeek,
         LocalTime startTime,
         LocalTime endTime,

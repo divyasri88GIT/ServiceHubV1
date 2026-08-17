@@ -2,33 +2,41 @@ package com.servicehub.bookingservice.client;
 
 import com.servicehub.bookingservice.dto.AvailabilitySlotResponse;
 import com.servicehub.bookingservice.dto.OfferingResponse;
-import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 @Component
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class ProviderServiceClient {
 
-//    private final RestClient restClient;
-private final RestClient.Builder restClientBuilder;
 
-//    public ProviderServiceClient(@Lazy RestClient restClient) {
-//        this.restClient = restClient;
-//    }
+    private final RestClient.Builder restClientBuilder;
 
-    public OfferingResponse getOffering(@NotNull(message = "Offering ID is required") Long offeringId) {
-        return restClientBuilder.build().get()
-                .uri("http://provider-service/api/categories/{offeringId}/offering", offeringId)
+    public ProviderServiceClient(
+            @Qualifier("loadBalancedRestClientBuilder")
+            RestClient.Builder restClientBuilder) {
+        this.restClientBuilder = restClientBuilder;
+    }
+
+    public OfferingResponse getOffering(Long offeringId) {
+        return restClientBuilder.build()
+                .get()
+                .uri(
+                        "http://provider-service/provider-service/api/{offeringId}/offering",
+                        offeringId
+                )
                 .retrieve()
                 .body(OfferingResponse.class);
     }
 
-    public AvailabilitySlotResponse getSlot(@NotNull(message = "Slot ID is required") Long slotId) {
-        return restClientBuilder.build().get()
-                .uri("http://provider-service/api/providers/{slotId}/slot", slotId)
+    public AvailabilitySlotResponse getSlot(Long slotId) {
+        return restClientBuilder.build()
+                .get()
+                .uri(
+                        "http://provider-service/provider-service/api/{slotId}/slot",
+                        slotId
+                )
                 .retrieve()
                 .body(AvailabilitySlotResponse.class);
     }
